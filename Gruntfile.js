@@ -18,7 +18,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsonlint');
 
-  // Default task(s).
+  // Default task(s) .
   // grunt.registerTask('default', ['uglify']);
   grunt.registerTask('default', ['jshint',  'jsonlint']);
   grunt.registerTask('lint', ['jshint', 'jsonlint']);

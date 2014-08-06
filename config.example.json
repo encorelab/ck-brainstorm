@@ -1,0 +1,15 @@
+{
+    "drowsy": {
+        "url": "http://drowsy.badger.encorelab.org",
+        "url_dev": "http://localhost:9292",
+        "db": "ck-brainstorm",
+        "uic_url": "http://ltg.evl.uic.edu:9292"
+    },
+    "wakeful": {
+        "url": "http://wakeful.badger.encorelab.org:7777/faye"
+    },
+    "rollcall": {"db": "rollcall"},
+    "login_picker": true,
+    "runs":["5ag","5at","5bj"],
+    "project_name": "Skeletor"
+}

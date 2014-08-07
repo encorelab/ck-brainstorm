@@ -144,11 +144,6 @@
       // }
     });
 
-        // click listener that log user out
-    jQuery('.logout-user').click(function() {
-      logoutUser();
-    });
-
 
   };
 

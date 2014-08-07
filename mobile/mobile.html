@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Skeletor Mobile</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1 user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
 
-    <link href="../libs/bootstrap-2.3.2.min.css" rel="stylesheet">
-    <link href="../libs/bootstrap-responsive-2.3.2.min.css" rel="stylesheet">
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="css/mobile.css" rel="stylesheet">
-    <link href="../libs/jquery.toastmessage.css" rel="stylesheet">
+    <link href="../bower_components/jquery-toastmessage-plugin/src/main/resources/css/jquery.toastmessage.css" rel="stylesheet">
 
-    <script type="text/javascript" src="../libs/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="../libs/bootstrap-2.3.2.min.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="../node_modules/underscore/underscore.js"></script>
     <script type="text/javascript" src="../node_modules/backbone/backbone.js"></script>
@@ -20,9 +20,9 @@
     <script type="text/javascript" src="../node_modules/backbone.drowsy/backbone.drowsy.js"></script>
     <script type="text/javascript" src="../node_modules/backbone.drowsy/wakeful.js"></script>
 
-    <script type="text/javascript" src="../libs/jquery.toastmessage.js"></script>
-    <script type="text/javascript" src="../libs/jquery.cookie.js"></script>
-    <script type="text/javascript" src="../libs/purl.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery-toastmessage-plugin/src/main/javascript/jquery.toastmessage.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery.cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../bower_components/purl/purl.js"></script>
 
     <script type="text/javascript" src="../shared/js/skeletor.js"></script>
     <script type="text/javascript" src="../shared/js/model.js"></script>
@@ -61,92 +61,74 @@
 </head>
 
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container-fluid">
-                <!-- .btn-navbar is used as the toggle for collapsed navbar content
-                TODO: what does this until brand do? Took it out and didn't see change-->
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </a>
-                <a class="brand" href="#">Should be overwritten by project_name in config.json</a>
-                <div class="nav-collapse collapse navbar-responsive-collapse">
-                    <ul class="nav nav-pills">
-                        <!-- <li class=" refresh-button"><a href="#">Refresh</a></li> -->
-                        <li class=" notes-button"><a href="#">Notes</a></li>
-                    </ul>
-                    <form class="navbar-form pull-right">
-                        <!-- Default behaviour of a input field in a form is to submit the form and reload
-                            the page. We don't want that at all. To circumvent this we add an onkeypress handler
-                            that calls the interceptKeypress function. This function calls loginUser if
-                            the 'return' key is pressed and then returns false to avoid bubbling of the event
-                            see also:
-                            http://stackoverflow.com/questions/905222/enter-key-press-event-in-javascript
-                        -->
-                        <input class="hidden" id="username" type="text" name="username" autocomplete="on" placeholder="Please enter name" title="error" pattern="^[a-zA-Z0-9]+$" maxlength="25" onkeypress="return HG.Mobile.interceptKeypress(event)" />
-                        <div class="alert alert-error input-alert">
-                            <strong>Error!</strong> Name can only be alphanumerical without whitespace!
-                        </div>
-                        <button id="login-button" type="submit" class="btn btn-primary">Get me in!</button>
-                    </form>
-                    <ul class="nav pull-right">
-                        <li class="active username-display"><a></a></li>
-                        <li class="active logout-user"><a>Logout</a></li>
-                    </ul>
-                </div>
+                </button>
+                <a class="navbar-brand" href="#">project_name</a>
             </div>
-        </div>
-    </div>
 
-    <div id="notes-screen" class="row-fluid">
-        <div class="span12 view-container bs-docs-sidebar">
-
-            <div id="notes-screen-input" class="span12 input-box-wrapper">
-
-                <div class="row-fliud">
-                    <a class="resume-note-btn btn btn-large btn-primary span6">Resume Note</a>
-                    <a class="new-note-btn btn btn-large btn-primary span6">New Note</a>
-                </div>
-
-                <div class="note-taking-toggle">
-                    <div class="row-fuild">
-                        <textarea class="note-body row-fuild" name="body" rows="10" placeholder="Enter observastions..."></textarea>
-                    </div>
-
-                    <div class="row-fliud">
-                        <a class="cancel-note-btn btn btn-large btn-danger span6">Cancel</a>
-                        <a class="share-note-btn btn btn-large btn-success span6">Submit</a>
-                    </div>
-                </div>
-
-                <!--  Unpublished Notes Modal-->
-                <div class="modal hide fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
-                    <div class="modal-header">
-                        <h3>Unpublished Notes</h3>
-                    </div>
-
-                    <div class="modal-body">
-                        <form role="form">
-                            <div class="form-group">
-                                <label for="selec-note-modal">Select an unpublished note to edit:</label>
-                                <select id="select-note-modal" class="form-control span10">
-                                  <!-- Filled by template from view -->
-                                </select>
-                                <br>
-                                <a class="modal-select-note btn btn-success">Edit</a>
-                            </div>
-                        </form>
-                    </div>
-                </div> <!-- end modal -->
-
-            </div> <!-- end #note-screen-input -->
-
-            <div id="list-screen" class="bs-docs-sidebar">
-                <ul class="nav nav-list bs-docs-sidenav affix-top scrollable">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active notes-button"><a href="#">Notes</a></li>
                 </ul>
-            </div>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div id="notes-screen" class="row">
+
+                <div id="notes-screen-input" class="col-md-12 input-box-wrapper">
+
+                    <div class="row">
+                        <a class="resume-note-btn btn btn-large btn-primary col-md-6">Resume Note</a>
+                        <a class="new-note-btn btn btn-large btn-primary col-md-6">New Note</a>
+                    </div>
+
+                    <div class="note-taking-toggle">
+                        <div class="row-fuild">
+                            <textarea class="note-body row-fuild" name="body" rows="10" placeholder="Enter observastions..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <a class="cancel-note-btn btn btn-large btn-danger span6">Cancel</a>
+                            <a class="share-note-btn btn btn-large btn-success span6">Submit</a>
+                        </div>
+                    </div>
+
+                    <!--  Unpublished Notes Modal-->
+                    <div class="modal hide fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
+                        <div class="modal-header">
+                            <h3>Unpublished Notes</h3>
+                        </div>
+
+                        <div class="modal-body">
+                            <form role="form">
+                                <div class="form-group">
+                                    <label for="selec-note-modal">Select an unpublished note to edit:</label>
+                                    <select id="select-note-modal" class="form-control span10">
+                                      <!-- Filled by template from view -->
+                                    </select>
+                                    <br>
+                                    <a class="modal-select-note btn btn-success">Edit</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div> <!-- end modal -->
+
+                </div> <!-- end #note-screen-input -->
+
+                <div id="list-screen" class="bs-docs-sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav affix-top scrollable">
+                    </ul>
+                </div>
 
         </div>
     </div>

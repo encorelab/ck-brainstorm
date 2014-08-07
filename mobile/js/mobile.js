@@ -152,7 +152,7 @@
 
   app.setup = function() {
     /* pull users, then initialize the model and wake it up, then pull everything else */
-    Skeletor.Model.init(app.config.drowsy.url, DATABASE+'-'+app.runId)
+    Skeletor.Model.init(app.config.drowsy.url, DATABASE)
     .then(function () {
       console.log('model initialized - now waking up');
       return Skeletor.Model.wake(app.config.wakeful.url);

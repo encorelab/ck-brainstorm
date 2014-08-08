@@ -144,10 +144,7 @@
       return false;
     });
 
-    // click listener that log user out
-    jQuery('.logout-user').click(function() {
-      logoutUser();
-    });
+
   };
 
   app.setup = function() {
@@ -288,6 +285,11 @@
    *  called very late in the init process, will try to look it with Promise
    */
   var setUpClickListeners = function () {
+    // click listener that log user out
+    jQuery('#logout-user').click(function() {
+      logoutUser();
+    });
+
     // Show notes screen
     jQuery('.notes-button').click(function() {
       if (app.username) {
@@ -416,7 +418,7 @@
     });
 
     // show modal dialog
-    jQuery('#login-picker').modal({backdrop: 'static'});
+    jQuery('#login-picker').modal({keyboard: false, backdrop: 'static'});
   };
 
   var showUserLoginPicker = function(runId) {

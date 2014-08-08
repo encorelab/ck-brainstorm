@@ -77,7 +77,12 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link</a></li>
+                <li class="active"><a href="#">Read notes</a></li>
+                <li class=""><a href="#">Write notes</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active username-display"><a></a></li>
+                <li id="logout-user" class="active logout-user"><a>Logout</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -88,39 +93,43 @@
 
             <div id="notes-screen-input" class="span12 input-box-wrapper">
 
-                <div class="row-fliud">
+                <div class="row">
                     <a class="resume-note-btn btn btn-large btn-primary span6">Resume Note</a>
                     <a class="new-note-btn btn btn-large btn-primary span6">New Note</a>
                 </div>
 
                 <div class="note-taking-toggle">
-                    <div class="row-fuild">
+                    <div class="row">
                         <textarea class="note-body row-fuild" name="body" rows="10" placeholder="Enter observastions..."></textarea>
                     </div>
 
-                    <div class="row-fliud">
+                    <div class="row">
                         <a class="cancel-note-btn btn btn-large btn-danger span6">Cancel</a>
                         <a class="share-note-btn btn btn-large btn-success span6">Submit</a>
                     </div>
                 </div>
 
                 <!--  Unpublished Notes Modal-->
-                <div class="modal hide fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
-                    <div class="modal-header">
-                        <h3>Unpublished Notes</h3>
-                    </div>
-
-                    <div class="modal-body">
-                        <form role="form">
-                            <div class="form-group">
-                                <label for="selec-note-modal">Select an unpublished note to edit:</label>
-                                <select id="select-note-modal" class="form-control span10">
-                                  <!-- Filled by template from view -->
-                                </select>
-                                <br>
-                                <a class="modal-select-note btn btn-success">Edit</a>
+                <div class="modal fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Unpublished Notes</h3>
                             </div>
-                        </form>
+
+                            <div class="modal-body">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <label for="selec-note-modal">Select an unpublished note to edit:</label>
+                                        <select id="select-note-modal" class="form-control span10">
+                                          <!-- Filled by template from view -->
+                                        </select>
+                                        <br>
+                                        <a class="modal-select-note btn btn-success">Edit</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- end modal -->
 
@@ -137,18 +146,22 @@
     <!-- Modals -->
 
     <!-- Login Modal -->
-    <div id="login-picker" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="login-picker" aria-hidden="true">
-      <div class="modal-header">
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
-        <h3>Please log in</h3>
-      </div>
-      <div class="modal-body login-buttons">
-        <!-- filled by java script with buttons for user login -->
-      </div>
-      <!-- <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary">Save changes</button>
-      </div> -->
+    <div id="login-picker" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="login-picker" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
+                <h3>Please log in</h3>
+                </div>
+                <div class="modal-body login-buttons">
+                <!-- filled by java script with buttons for user login -->
+                </div>
+                <!-- <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary">Save changes</button>
+                </div> -->
+            </div>
+        </div>
     </div>
 
     <!-- Note Picker Modal -->

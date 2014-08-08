@@ -290,30 +290,36 @@
       logoutUser();
     });
 
-    // Show notes screen
-    jQuery('.notes-button').click(function() {
+    /*
+    * ======================================
+    * Buttons that manage the naviation
+    * ======================================
+    */
+    jQuery('.write-button').click(function() {
       if (app.username) {
-        jQuery('.nav-pills li').removeClass('active'); // unmark all nav items
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
         jQuery(this).addClass('active');
 
         app.hideAllRows();
-        jQuery('#notes-screen').removeClass('hidden');
+        jQuery('#write-screen').removeClass('hidden');
       }
     });
 
-    // Refresh and repull data - this may go eventually
-    jQuery('.refresh-button').click(function() {
-      jQuery().toastmessage('showNoticeToast', "Refreshing...");
+    jQuery('.read-button').click(function() {
+      if (app.username) {
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
+        jQuery(this).addClass('active');
 
-      tryPullAll().done(function(stateData, configurationData, recentBoutData) {
-        console.log('tryPullAll finished and we could wait for it or even manipulate data');
-      });
-
-      console.log('Refresh the harvest planning graph on user request');
-      Skeletor.Patchgraph.refresh().done(function(){
-        console.log('Patchgraph data refreshed');
-      });
+        app.hideAllRows();
+        jQuery('#read-screen').removeClass('hidden');
+      }
     });
+
+    /*
+    * ======================================
+    * Other click listeners for the UI
+    * ======================================
+    */
 
 
   };

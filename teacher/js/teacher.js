@@ -108,9 +108,8 @@
        */
       setUpClickListeners();
 
-      // show notes-screen - is this the default? TODO: check with design team where the first pedagogical step should be
-      jQuery('#notes-screen').removeClass('hidden');
-      jQuery('.nav-pills .notes-button').addClass('active'); // highlight notes selection in nav bar
+      jQuery('#list-screen').removeClass('hidden');
+      jQuery('.runs-tab').addClass('active');         // highlight runs in nav bar
 
   };
 
@@ -133,8 +132,22 @@
    *  called very late in the init process, will try to look it with Promise
    */
   var setUpClickListeners = function () {
-    // Show notes screen
-    jQuery('.new-brainstorm').click(function() {
+    jQuery('.runs-tab').click(function() {
+      // hide current
+      // show runs
+      jQuery('.nav-pills').removeClass('active');
+      jQuery('.runs-tab').addClass('active');
+    });
+
+    jQuery('.classes-tab').click(function() {
+      // hide current
+      // show runs
+      jQuery('.nav-pills').removeClass('active');
+      jQuery('.classes-tab').addClass('active');
+    });
+
+    jQuery('#setup-new-brainstorm').click(function() {
+      console.log('unfinished... move to new brainstorm scr');
       // if (app.username) {
       //   jQuery('.nav-pills li').removeClass('active'); // unmark all nav items
       //   jQuery(this).addClass('active');

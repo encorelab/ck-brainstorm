@@ -44,6 +44,23 @@
         </li>
     </script>
 
+    <!--                  -->
+    <!--   NOTE TEMPLATE  -->
+    <!--                  -->
+<!--
+    <script id="notes-list-template" type="text/template">
+        <li class="list-item <%= note_type %> <%= me_or_others %>" data-id=<%= id %>>
+            <a class="disabled" href="#">
+                <h4><%= title %></h4>
+                <i><span><%= author %></span></i>
+                <div class="note-text">
+                    <p><%= text %></p>
+                    <p class="small"><%= created_at %></p>
+                </div>
+            </a>
+        </li>
+    </script>
+-->
     <!-- Resume unpublished notes template -->
     <script id="resume-unpublished-notes" type="text/template">
         <option data-id="<%= id %>" ><%= option_text %></option>
@@ -77,8 +94,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navigation">
-                <li class="read-button active"><a href="#">Read notes</a></li>
-                <li class="write-button"><a href="#">Write notes</a></li>
+                <li class="read-button active"><a href="#read">Read notes</a></li>
+                <li class="write-button"><a href="#write">Write notes</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="active username-display"><a></a></li>
@@ -88,65 +105,77 @@
       </div><!-- /.container-fluid -->
     </nav>
 
-    <div id="read-screen" class="row-fluid">
-        show me
-    </div>
+    <div id="read-screen" class="container">
+        <div class="row-fluid">
+            <div class="col-md-4 scrollable-y">
+                <ul class="note-list">
+                    <!-- Notes populate this element -->
+                </ul>
+            </div>
 
-    <div id="write-screen" class="row-fluid">
-        <div class="span12 view-container bs-docs-sidebar">
+            <div class="col-md-8 note-details">
+                <!-- photo-set-note template inserted here  -->
+            </div>
+        </div>
 
-            <div id="notes-screen-input" class="span12 input-box-wrapper">
-
-                <div class="row">
-                    <a class="resume-note-btn btn btn-large btn-primary span6">Resume Note</a>
-                    <a class="new-note-btn btn btn-large btn-primary span6">New Note</a>
-                </div>
-
-                <div class="note-taking-toggle">
-                    <div class="row">
-                        <textarea class="note-body row-fuild" name="body" rows="10" placeholder="Enter observastions..."></textarea>
-                    </div>
-
-                    <div class="row">
-                        <a class="cancel-note-btn btn btn-large btn-danger span6">Cancel</a>
-                        <a class="share-note-btn btn btn-large btn-success span6">Submit</a>
-                    </div>
-                </div>
-
-                <!--  Unpublished Notes Modal-->
-                <div class="modal fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3>Unpublished Notes</h3>
-                            </div>
-
-                            <div class="modal-body">
-                                <form role="form">
-                                    <div class="form-group">
-                                        <label for="selec-note-modal">Select an unpublished note to edit:</label>
-                                        <select id="select-note-modal" class="form-control span10">
-                                          <!-- Filled by template from view -->
-                                        </select>
-                                        <br>
-                                        <a class="modal-select-note btn btn-success">Edit</a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- end modal -->
-
-            </div> <!-- end #note-screen-input -->
-
+        <div class="row-fluid">
             <div id="list-screen" class="bs-docs-sidebar">
                 <ul class="nav nav-list bs-docs-sidenav affix-top scrollable">
                 </ul>
             </div>
-
         </div>
     </div>
 
+    <div id="write-screen" class="container">
+        <div class="row-fluid">
+            <div class="col-md-12 view-container bs-docs-sidebar">
+
+                <div id="notes-screen-input" class="span12 input-box-wrapper">
+
+                    <div class="row">
+                        <a class="resume-note-btn btn btn-large btn-primary span6">Resume Note</a>
+                        <a class="new-note-btn btn btn-large btn-primary span6">New Note</a>
+                    </div>
+
+                    <div class="note-taking-toggle">
+                        <div class="row">
+                            <textarea class="note-body row-fuild" name="body" rows="10" placeholder="Enter observastions..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <a class="cancel-note-btn btn btn-large btn-danger span6">Cancel</a>
+                            <a class="share-note-btn btn btn-large btn-success span6">Submit</a>
+                        </div>
+                    </div>
+
+                    <!--  Unpublished Notes Modal-->
+                    <div class="modal fade unpublished-note-picker" tabindex="-1" role="dialog" aria-labelledby="unpublished-note-picker" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>Unpublished Notes</h3>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label for="selec-note-modal">Select an unpublished note to edit:</label>
+                                            <select id="select-note-modal" class="form-control span10">
+                                              <!-- Filled by template from view -->
+                                            </select>
+                                            <br>
+                                            <a class="modal-select-note btn btn-success">Edit</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end modal -->
+
+                </div> <!-- end #note-screen-input -->
+            </div>
+        </div>
+    </div>
     <!-- Modals -->
 
     <!-- Login Modal -->

@@ -19,7 +19,6 @@
     wakeful: {
       url: 'string'
     },
-    rollcall: {db: 'string'},
     login_picker:'boolean',
     runs:'object'
   };
@@ -57,7 +56,7 @@
     app.hideAllContainers();
 
     if (app.rollcall === null) {
-      app.rollcall = new Rollcall(app.config.drowsy.url, app.config.rollcall.db);
+      app.rollcall = new Rollcall(app.config.drowsy.url, DATABASE);
     }
 
     app.handleLogin();

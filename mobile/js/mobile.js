@@ -19,7 +19,6 @@
     wakeful: {
       url: 'string'
     },
-    rollcall: {db: 'string'},
     login_picker:'boolean',
     runs:'object'
   };
@@ -54,10 +53,10 @@
     DATABASE = app.config.drowsy.db;
 
     // hide all rows initially
-    app.hideAllRows();
+    app.hideAllContainers();
 
     if (app.rollcall === null) {
-      app.rollcall = new Rollcall(app.config.drowsy.url, app.config.rollcall.db);
+      app.rollcall = new Rollcall(app.config.drowsy.url, DATABASE);
     }
 
     app.handleLogin();
@@ -144,10 +143,7 @@
       return false;
     });
 
-    // click listener that log user out
-    jQuery('.logout-user').click(function() {
-      logoutUser();
-    });
+
   };
 
   app.setup = function() {
@@ -170,9 +166,6 @@
   };
 
   app.ready = function() {
-    jQuery.when(tryPullAll()).done(function(stateData, configurationData, recentBoutData, activityDropdownData) {
-      console.log('tryPullAll and Patchgraph.init() finished so we do the rest of ready()');
-
       /* ======================================================
        * Setting up the Backbone Views to render data
        * coming from Collections and Models
@@ -202,9 +195,8 @@
       setUpClickListeners();
 
       // show notes-screen - is this the default? TODO: check with design team where the first pedagogical step should be
-      jQuery('#notes-screen').removeClass('hidden');
-      jQuery('.nav-pills .notes-button').addClass('active'); // highlight notes selection in nav bar
-    });
+      jQuery('#read-screen').removeClass('hidden');
+      // jQuery('.nav-pills .notes-button').addClass('active'); // highlight notes selection in nav bar
   };
 
 
@@ -241,39 +233,6 @@
 
   //*************** HELPER FUNCTIONS ***************//
 
-  var tryPullAll = function() {
-    // return jQuery.when(tryPullStateData(), tryPullStatisticsData(), tryPullConfigurationData(), tryPullRecentBoutData(), tryPullActivityData());
-    // return jQuery.when(tryPullActivityData());
-  };
-
-  var tryPullActivityData = function() {
-    var selector = '{"runId":"'+app.runId+'"}';
-    var promise = jQuery.get(app.config.drowsy.url+'/'+DATABASE+'/activity?selector='+selector)
-      .then(function (data) {
-        var sortedData = _.sortBy(data, function (a) {
-          return a._id;
-        });
-        _.each(sortedData, function(activity) {
-          app.activityDropdownData.push(activity);
-        });
-        console.log("Activity Data pulled");
-      });
-
-    return promise;
-  };
-
-
-  var tryPullUsersData = function() {
-    if (app.runId) {
-      app.rollcall.usersWithTags([app.runId])
-      .done(function (availableUsers) {
-        console.log("Users data pulled!");
-        app.users = availableUsers;
-      })
-      .fail(function() { console.error("Error pulling users data..."); });
-    }
-  };
-
 
   var idToTimestamp = function(id) {
     var timestamp = id.substring(0,8);
@@ -288,30 +247,41 @@
    *  called very late in the init process, will try to look it with Promise
    */
   var setUpClickListeners = function () {
-    // Show notes screen
-    jQuery('.notes-button').click(function() {
+    // click listener that log user out
+    jQuery('#logout-user').click(function() {
+      logoutUser();
+    });
+
+    /*
+    * ======================================
+    * Buttons that manage the naviation
+    * ======================================
+    */
+    jQuery('.write-button').click(function() {
       if (app.username) {
-        jQuery('.nav-pills li').removeClass('active'); // unmark all nav items
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
         jQuery(this).addClass('active');
 
-        app.hideAllRows();
-        jQuery('#notes-screen').removeClass('hidden');
+        app.hideAllContainers();
+        jQuery('#write-screen').removeClass('hidden');
       }
     });
 
-    // Refresh and repull data - this may go eventually
-    jQuery('.refresh-button').click(function() {
-      jQuery().toastmessage('showNoticeToast', "Refreshing...");
+    jQuery('.read-button').click(function() {
+      if (app.username) {
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
+        jQuery(this).addClass('active');
 
-      tryPullAll().done(function(stateData, configurationData, recentBoutData) {
-        console.log('tryPullAll finished and we could wait for it or even manipulate data');
-      });
-
-      console.log('Refresh the harvest planning graph on user request');
-      Skeletor.Patchgraph.refresh().done(function(){
-        console.log('Patchgraph data refreshed');
-      });
+        app.hideAllContainers();
+        jQuery('#read-screen').removeClass('hidden');
+      }
     });
+
+    /*
+    * ======================================
+    * Other click listeners for the UI
+    * ======================================
+    */
 
 
   };
@@ -416,7 +386,7 @@
     });
 
     // show modal dialog
-    jQuery('#login-picker').modal({backdrop: 'static'});
+    jQuery('#login-picker').modal({keyboard: false, backdrop: 'static'});
   };
 
   var showUserLoginPicker = function(runId) {
@@ -454,8 +424,8 @@
     });
   };
 
-  app.hideAllRows = function () {
-    jQuery('.row-fluid').each(function (){
+  app.hideAllContainers = function () {
+    jQuery('.container').each(function (){
       jQuery(this).addClass('hidden');
     });
   };

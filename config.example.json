@@ -8,8 +8,7 @@
     "wakeful": {
         "url": "http://wakeful.badger.encorelab.org:7777/faye"
     },
-    "rollcall": {"db": "rollcall"},
     "login_picker": true,
-    "runs":["5ag","5at","5bj"],
+    "runs":["test"],
     "project_name": "CK Brainstorm"
 }

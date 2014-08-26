@@ -92,12 +92,12 @@
        * ======================================================
        */
 
-      // if (app.listView === null) {
-      //   app.listView = new app.View.ListView({
-      //     el: '#list-screen',
-      //     collection: Skeletor.Model.awake.notes
-      //   });
-      // }
+      if (app.listView === null) {
+        app.listView = new app.View.ListView({
+          el: '#brainstorm-list-screen',
+          //collection: Skeletor.Model.awake.notes
+        });
+      }
 
       setProjectName(app.config.project_name);
 
@@ -108,7 +108,7 @@
        */
       setUpClickListeners();
 
-      jQuery('#list-screen').removeClass('hidden');
+      jQuery('#runs-screen').removeClass('hidden');
       jQuery('.runs-tab').addClass('active');         // highlight runs in nav bar
 
   };
@@ -146,7 +146,7 @@
       jQuery('.classes-tab').addClass('active');
     });
 
-    jQuery('#setup-new-brainstorm').click(function() {
+    jQuery('#setup-new-brainstorm-btn').click(function() {
       console.log('unfinished... move to new brainstorm scr');
       // if (app.username) {
       //   jQuery('.nav-pills li').removeClass('active'); // unmark all nav items
@@ -156,7 +156,6 @@
       //   jQuery('#notes-screen').removeClass('hidden');
       // }
     });
-
 
   };
 

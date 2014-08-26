@@ -6,9 +6,9 @@
 		font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, sans-serif;
 	}
 
-	.view-container {
+/*	.view-container {
 		margin: 0 2%;
-	}
+	}*/
 
 	.orientation-warning {
 		display: none;
@@ -30,7 +30,7 @@
 	}
 
 	.active {
-		color: white !important;
+		color: white;
 	}
 
 
@@ -83,7 +83,47 @@
 	    display: none;
 	}
 
-	/* LIST SCREEN */
+	/* BRAINSTORM LIST SCREEN */
+
+	#brainstorm-list-screen {
+		padding: 5px;
+		border-radius: 7px;
+		background-color: red;
+	}
+
+/*	#brainstorm-list-screen ul {
+		min-height: 200px;
+		overflow: hidden;
+		background-color: white;
+	}
+
+	#brainstorm-list-screen li {
+		margin-bottom: 5px;
+	}
+
+	#brainstorm-list-screen .list-item {
+		margin-left: 15px;
+	}
+
+	#brainstorm-list-screen .note {
+		position: relative;
+		padding: 10px;
+		margin: 10px 0;
+		width: 50%;
+	}*/
+
+	#setup-new-brainstorm-btn {
+		margin: 10px;
+	}
+
+
+	/* CLASS FILTER SCREEN */
+
+	#class-filter-list-screen {
+		padding: 5px;
+		border-radius: 7px;
+		background-color: yellow;
+	}
 
 
 @media all and (orientation:portrait){

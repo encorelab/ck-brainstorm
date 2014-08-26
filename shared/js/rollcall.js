@@ -168,15 +168,23 @@ rollcall.group('leprechaun')
 
     // Group model
     this.Group = this.db.Document('groups').extend({
-      addUser: function (user) {
-        var users = _.clone(this.get('users'));
-        users.push(user);
-        this.set('users', _.uniq(users));
+      addGroup: function (group) {
+        var groups = _.clone(this.get('groups'));
+        groups.push(group);
+        this.set('groups', _.uniq(group));
       }
     });
 
     this.Groups = this.db.Collection('groups').extend({
       model: this.Group
+    });
+
+    // Run model
+    this.Run = this.db.Document('runs').extend({
+    });
+
+    this.Runs = this.db.Collection('runs').extend({
+      model: this.Run
     });
 
   };
@@ -212,6 +220,19 @@ rollcall.group('leprechaun')
       });
 
     return authenticatePromise;
+  };
+
+  Rollcall.prototype.identify = function(username) {
+    var identifyPromise = this.user(username)
+      .then(function (user) {
+        if (!user) {
+          return null;
+        }
+
+        return user;
+      });
+
+    return identifyPromise;
   };
 
   Rollcall.prototype.usersWithTags = function(tags) {
@@ -273,6 +294,26 @@ rollcall.group('leprechaun')
     var selector = {"tags":{"$all": tags}};
 
     return this.groups(selector);
+  };
+
+  /*
+  * Added run stuff - unsure and therefor experimental
+  */
+
+  Rollcall.prototype.runs = function(selector) {
+    selector = selector || {};
+
+    var runs = new this.Runs();
+    var runsPromise = runs.fetch({
+      data: {
+        selector: JSON.stringify(selector),
+        strict: false
+      }
+    });
+
+    return runsPromise.then(function () {
+      return runs;
+    });
   };
 
   this.Rollcall = Rollcall;

@@ -31,7 +31,7 @@
   app.userState = null;
   app.numOfStudents = 0;
 
-  var DATABASE = null;
+  var BASE_DATABASE = null;
   app.stateData = null;
 
   app.currentNote = null;
@@ -50,153 +50,95 @@
     app.verifyConfig(app.config, app.requiredConfig);
 
     // TODO: should ask at startup
-    DATABASE = app.config.drowsy.db;
+    BASE_DATABASE = app.config.drowsy.db;
 
     // hide all rows initially
     app.hideAllContainers();
 
     if (app.rollcall === null) {
-      app.rollcall = new Rollcall(app.config.drowsy.url, DATABASE);
+      app.rollcall = new Rollcall(app.config.drowsy.url, BASE_DATABASE);
     }
 
-    app.handleLogin();
+    setProjectName(app.config.project_name);
 
-  };
+    /* ======================================================
+     * Function to enable click listeners in the UI
+     * Beware: some click listeners might belong into Views
+     * ======================================================
+     */
+    setUpClickListeners();
 
-  app.handleLogin = function () {
-
-    // if (jQuery.QueryString.runId && jQuery.QueryString.username) {
-    //   console.log ("URL parameter correct :)");
-    //   app.runId = jQuery.QueryString.runId;
-    //   app.username = jQuery.QueryString.username;
-    // } else {
-    //   // retrieve user name from cookie if possible otherwise ask user to choose name
-    //   app.runId = jQuery.cookie('hunger-games_mobile_runId');
-    //   app.username = jQuery.cookie('hunger-games_mobile_username');
-    // }
-
-    if (jQuery.url().param('runId') && jQuery.url().param('username')) {
-      console.log ("URL parameter correct :)");
-      app.runId = jQuery.url().param('runId');
-      app.username = jQuery.url().param('username');
-    } else {
-      // retrieve user name from cookie if possible otherwise ask user to choose name
-      app.runId = jQuery.cookie('hunger-games_mobile_runId');
-      app.username = jQuery.cookie('hunger-games_mobile_username');
+    // check for username cookie and sign in if cookie found
+    var cookieUsername = jQuery.cookie(app.config.project_code + '_mobile_username');
+    if (cookieUsername) {
+      signin(cookieUsername);
     }
 
-    if (app.username && app.runId) {
-      // We have a user in cookies so we show stuff
-      console.log('We found user: '+app.username);
-
-      // make sure the app.users collection is always filled
-      app.rollcall.usersWithTags([app.runId])
-      .done(function (usersInRun) {
-        console.log(usersInRun);
-
-        if (usersInRun && usersInRun.length > 0) {
-          app.users = usersInRun;
-
-          // sort the collection by username
-          app.users.comparator = function(model) {
-            return model.get('username');
-          };
-          app.users.sort();
-
-          var currentUser = app.users.findWhere({username: app.username});
-
-          if (currentUser) {
-            jQuery('.username-display a').text(app.runId+' - '+currentUser.get('display_name'));
-
-            hideLogin();
-            showUsername();
-
-            app.setup();
-          } else {
-            console.log('User '+usersInRun+' not found in run '+app.runId+'. Show login picker!');
-            logoutUser();
-          }
-        } else {
-          console.log("Either run is wrong or run has not users. Wrong URL or Cookie? Show login");
-          // fill modal dialog with user login buttons
-          logoutUser();
-        }
-      });
-    } else {
-      console.log('No user and run found so prompt for username and runId');
-      hideUsername();
-      // fill modal dialog with user login buttons
-      if (app.config.login_picker) {
-        hideLogin();
-        showRunPicker();
-        // showUserLoginPicker(app.runId);
-      } else {
-        showLogin();
-        hideUserLoginPicker();
-      }
-    }
-
-    // click listener that sets username
-    jQuery('#login-button').click(function() {
-      app.loginUser(jQuery('#username').val());
-      // prevent bubbling events that lead to reload
-      return false;
+    /* MISC */
+    jQuery().toastmessage({
+      position : 'middle-center'
     });
-
-
   };
 
-  app.setup = function() {
+  var initRun = function(runId) {
     /* pull users, then initialize the model and wake it up, then pull everything else */
-    Skeletor.Model.init(app.config.drowsy.url, DATABASE)
+    Skeletor.Model.init(app.config.drowsy.url, BASE_DATABASE+'-'+runId)
     .then(function () {
       console.log('model initialized - now waking up');
       return Skeletor.Model.wake(app.config.wakeful.url);
     })
     .done(function () {
       console.log('model awake - now calling ready');
-      app.ready();
+      runReady();
     });
-
-    /* MISC */
-    jQuery().toastmessage({
-      position : 'middle-center'
-    });
-
   };
 
-  app.ready = function() {
-      /* ======================================================
-       * Setting up the Backbone Views to render data
-       * coming from Collections and Models
-       * ======================================================
-       */
-      if (app.inputView === null) {
-        app.inputView = new app.View.InputView({
-          el: '#notes-screen-input',
-          collection: Skeletor.Model.awake.notes
-        });
+  var runReady = function() {
+    /* ======================================================
+     * Setting up the Backbone Views to render data
+     * coming from Collections and Models
+     * ======================================================
+     */
+    if (app.inputView === null) {
+      app.inputView = new app.View.InputView({
+        el: '#notes-screen-input',
+        collection: Skeletor.Model.awake.notes
+      });
+    }
+
+    if (app.listView === null) {
+      app.listView = new app.View.ListView({
+        el: '#list-screen',
+        collection: Skeletor.Model.awake.notes
+      });
+    }
+
+    /*
+    * ======================================
+    * Buttons that manage the naviation
+    * ======================================
+    */
+    jQuery('.write-button').click(function() {
+      if (app.username) {
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
+        jQuery(this).addClass('active');
+
+        app.hideAllContainers();
+        jQuery('#write-screen').removeClass('hidden');
       }
+    });
 
-      if (app.listView === null) {
-        app.listView = new app.View.ListView({
-          el: '#list-screen',
-          collection: Skeletor.Model.awake.notes
-        });
+    jQuery('.read-button').click(function() {
+      if (app.username) {
+        jQuery('.navigation li').removeClass('active'); // unmark all nav items
+        jQuery(this).addClass('active');
+
+        app.hideAllContainers();
+        jQuery('#read-screen').removeClass('hidden');
       }
+    });
 
-      setProjectName(app.config.project_name);
-
-      /* ======================================================
-       * Function to enable click listeners in the UI
-       * Beware: some click listeners might belong into Views
-       * ======================================================
-       */
-      setUpClickListeners();
-
-      // show notes-screen - is this the default? TODO: check with design team where the first pedagogical step should be
-      jQuery('#read-screen').removeClass('hidden');
-      // jQuery('.nav-pills .notes-button').addClass('active'); // highlight notes selection in nav bar
+    jQuery('#read-screen').removeClass('hidden');
   };
 
 
@@ -247,44 +189,23 @@
    *  called very late in the init process, will try to look it with Promise
    */
   var setUpClickListeners = function () {
+    // login user
+    jQuery('#signin-button').click(function (){
+      var username = jQuery('.email').val();
+      signin(username);
+    });
+
     // click listener that log user out
     jQuery('#logout-user').click(function() {
       logoutUser();
     });
-
-    /*
-    * ======================================
-    * Buttons that manage the naviation
-    * ======================================
-    */
-    jQuery('.write-button').click(function() {
-      if (app.username) {
-        jQuery('.navigation li').removeClass('active'); // unmark all nav items
-        jQuery(this).addClass('active');
-
-        app.hideAllContainers();
-        jQuery('#write-screen').removeClass('hidden');
-      }
-    });
-
-    jQuery('.read-button').click(function() {
-      if (app.username) {
-        jQuery('.navigation li').removeClass('active'); // unmark all nav items
-        jQuery(this).addClass('active');
-
-        app.hideAllContainers();
-        jQuery('#read-screen').removeClass('hidden');
-      }
-    });
-
     /*
     * ======================================
     * Other click listeners for the UI
     * ======================================
     */
-
-
   };
+
 
   var setProjectName = function (name) {
     jQuery('.brand').text(name);
@@ -300,19 +221,27 @@
       if (user) {
         console.log(user.toJSON());
 
-        app.username = user.get('username');
+        app.username = username;
 
-        jQuery.cookie('hunger-games_mobile_username', app.username, { expires: 1, path: '/' });
-        jQuery('.username-display a').text(app.runId+' - '+user.get('display_name'));
-
-        // show notes-screen
-        jQuery('#notes-screen').removeClass('hidden');
+        jQuery.cookie(app.config.project_code + '_mobile_username', app.username, { expires: 1, path: '/' });
+        // jQuery.cookie('hunger-games_mobile_username', app.username, { expires: 1, path: '/' });
+        jQuery('.username-display a').text(user.get('display_name'));
 
         hideLogin();
-        hideUserLoginPicker();
         showUsername();
 
-        app.setup();
+        //=============== populate dashboard screen
+        app.rollcall.runs({"class":{"$in":["ec101","ec102"]}})
+        .done(function(runsArray) {
+          console.log(runsArray.toJSON());
+          runsArray.each(function(run){
+            jQuery('#dashboard-screen .row-fluid').append(JSON.stringify(run));
+          });
+
+          // show dashboard to select run
+          jQuery('#dashboard-screen').removeClass('hidden');
+        });
+        //=============== populate dashboard screen
       } else {
         console.log('User '+username+' not found!');
         if (confirm('User '+username+' not found! Do you want to create the user to continue?')) {
@@ -326,9 +255,25 @@
     });
   };
 
+  var signin = function (identifier) {
+    app.rollcall.identify(identifier).done(function (identifiedUser) {
+      if (identifiedUser) {
+        // alert("I know you :)");
+        app.user = identifiedUser;
+        app.username = identifiedUser.get('username');
+        app.loginUser(app.username);
+      } else {
+        alert("Who are you?");
+      }
+    });
+  };
+
+
   var logoutUser = function () {
-    jQuery.removeCookie('hunger-games_mobile_username',  { path: '/' });
-    jQuery.removeCookie('hunger-games_mobile_runId',  { path: '/' });
+    jQuery.removeCookie(app.config.project_code + '_mobile_username',  { path: '/' });
+    jQuery.removeCookie(app.config.project_code + '_mobile_runId',  { path: '/' });
+    // jQuery.removeCookie('hunger-games_mobile_username',  { path: '/' });
+    // jQuery.removeCookie('hunger-games_mobile_runId',  { path: '/' });
 
     // to make reload not log us in again after logout is called we need to remove URL parameters
     if (window.location.search && window.location.search !== "") {
@@ -341,88 +286,24 @@
   };
 
   var showLogin = function () {
-    jQuery('#login-button').removeAttr('disabled');
-    jQuery('#username').removeAttr('disabled');
+    jQuery('.signin-bar').removeClass('hide');
   };
 
   var hideLogin = function () {
-    jQuery('#login-button').attr('disabled','disabled');
-    jQuery('#username').attr('disabled','disabled');
+    jQuery('.signin-bar').addClass('hide');
   };
 
-  var hideUserLoginPicker = function () {
-    // hide modal dialog
-    jQuery('#login-picker').modal('hide');
-  };
 
   var showUsername = function () {
     jQuery('.username-display').removeClass('hide');
+    jQuery('.signout-bar').removeClass('hide');
   };
 
   var hideUsername = function() {
     jQuery('.username-display').addClass('hide');
+    jQuery('.signout-bar').addClass('hide');
   };
 
-  var showRunPicker = function(runs) {
-    jQuery('.login-buttons').html(''); //clear the house
-    console.log(app.config.runs);
-
-    // change header
-    jQuery('#login-picker .modal-header h3').text('Please choose your class');
-
-    _.each(app.config.runs, function(run) {
-      var button = jQuery('<button class="btn btn-large btn-primary login-button">');
-      button.val(run);
-      button.text(run);
-      jQuery('.login-buttons').append(button);
-    });
-
-    // register click listeners
-    jQuery('.login-button').click(function() {
-      app.runId = jQuery(this).val();
-      jQuery.cookie('hunger-games_mobile_runId', app.runId, { expires: 1, path: '/' });
-      // jQuery('#login-picker').modal("hide");
-      showUserLoginPicker(app.runId);
-    });
-
-    // show modal dialog
-    jQuery('#login-picker').modal({keyboard: false, backdrop: 'static'});
-  };
-
-  var showUserLoginPicker = function(runId) {
-    // change header
-    jQuery('#login-picker .modal-header h3').text('Please login with your squirrel ID');
-
-    // retrieve all users that have runId
-    app.rollcall.usersWithTags([runId])
-    .done(function (availableUsers) {
-      jQuery('.login-buttons').html(''); //clear the house
-      console.log(availableUsers);
-      app.users = availableUsers;
-
-      // sort the collection by username
-      app.users.comparator = function(model) {
-        return model.get('display_name');
-      };
-      app.users.sort();
-
-      app.users.each(function(user) {
-        var button = jQuery('<button class="btn btn-large btn-primary login-button">');
-        button.val(user.get('username'));
-        button.text(user.get('display_name'));
-        jQuery('.login-buttons').append(button);
-      });
-
-      // register click listeners
-      jQuery('.login-button').click(function() {
-        var clickedUserName = jQuery(this).val();
-        app.loginUser(clickedUserName);
-      });
-
-      // show modal dialog
-      // jQuery('#login-picker').modal({backdrop: 'static'});
-    });
-  };
 
   app.hideAllContainers = function () {
     jQuery('.container').each(function (){
@@ -468,7 +349,7 @@
   **/
   app.interceptKeypress = function(e) {
     if (e.which === 13 || e.keyCode === 13) {
-      app.loginUser(jQuery('#username').val());
+      //app.loginUser(jQuery('#username').val());
       return false;
     }
   };

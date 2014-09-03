@@ -230,12 +230,19 @@
         hideLogin();
         showUsername();
 
+        // clear the dashboard
+        jQuery('#dashboard-screen .row-fluid').html('');
+
         //=============== populate dashboard screen
         app.rollcall.runs({"class":{"$in":["ec101","ec102"]}})
         .done(function(runsArray) {
           console.log(runsArray.toJSON());
           runsArray.each(function(run){
-            jQuery('#dashboard-screen .row-fluid').append(JSON.stringify(run));
+            //jQuery('#dashboard-screen .row-fluid').append(JSON.stringify(run));
+
+            var runFragment = _.template(jQuery('#available-runs-template').text(), {'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
+            jQuery('#dashboard-screen .row-fluid').append(runFragment);
+
           });
 
           // show dashboard to select run

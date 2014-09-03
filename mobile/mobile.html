@@ -31,6 +31,21 @@
 
     <script type="text/javascript" src="js/mobile.js"></script>
     <script type="text/javascript" src="js/mobile.view.js"></script>
+    <script type="text/javascript" src="js/mobile.router.js"></script>
+
+    <!-- Available runs Template  -->
+    <script id="available-runs-template" type="text/template">
+        <li class="list-item" data-id=<%= id %>>
+            <div class="note-text">
+                <a href=#run/<%= run_id %>>
+                    <p><%= class_name %></p>
+                    <p><%= run_name %></p>
+                    <p><%= run_id %></p>
+                    <p class="small">Created on <%= created_at %></p>
+                </a>
+            </div>
+        </li>
+    </script>
 
     <!-- Note Template  -->
     <script id="notes-list-template" type="text/template">
@@ -94,8 +109,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navigation">
-                    <li class="read-button active"><a href="#read">Read notes</a></li>
-                    <li class="write-button"><a href="#write">Write notes</a></li>
+                    <li class="read-button active hidden"><a href="#read">Read notes</a></li>
+                    <li class="write-button hidden"><a href="#write">Write notes</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right signout-bar hide">

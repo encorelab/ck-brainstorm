@@ -17,6 +17,15 @@ rollcall.usersWithTags(['foo', 'bar'])
   });
 });
 
+## Get all users with classes 'ec101' and 'ec203'
+
+rollcall.usersWithClasses(['ec101', 'ec203'])
+.done(function (users) {
+  users.each(function (user) {
+    console.log(user.toJSON());
+  });
+});
+
 ## Get the user with username 'akrauss'
 
 rollcall.user('akrauss')
@@ -71,6 +80,22 @@ rollcall.user('akrauss')
 rollcall.user('akrauss')
 .done(function (user) {
   user.removeTag('mytag');
+  user.save();
+});
+
+## Add a class for a user
+
+rollcall.user('akrauss')
+.done(function (user) {
+  user.addClass('myNewClass');
+  user.save();
+});
+
+## Remove a class from user
+
+rollcall.user('akrauss')
+.done(function (user) {
+  user.removeClass('myOldClass');
   user.save();
 });
 
@@ -144,6 +169,12 @@ rollcall.group('leprechaun')
     this.User = this.db.Document('users').extend({
       addTag: function (tag) {
         var tags = _.clone(this.get('tags'));
+
+        // if no classes array exists add it
+        if (tags) {
+          classes = [];
+        }
+
         tags.push(tag);
         this.set('tags', _.uniq(tags));
       },
@@ -151,6 +182,22 @@ rollcall.group('leprechaun')
       removeTag: function (tag) {
         var tags = this.get('tags');
         this.set('tags', _.without(tags, tag));
+      },
+
+      addClass: function (c) {
+        var classes = _.clone(this.get('classes'));
+        // if no classes array exists add it
+        if (!classes) {
+          classes = [];
+        }
+
+        classes.push(c);
+        this.set('classes', _.uniq(classes));
+      },
+
+      removeClass: function (c) {
+        var classes = this.get('classes');
+        this.set('classes', _.without(classes, c));
       },
 
       isTeacher: function() {
@@ -238,6 +285,13 @@ rollcall.group('leprechaun')
   Rollcall.prototype.usersWithTags = function(tags) {
     tags = tags || [];
     var selector = {"tags":{"$all": tags}};
+
+    return this.users(selector);
+  };
+
+  Rollcall.prototype.usersWithClasses = function(classes) {
+    classes = classes || [];
+    var selector = {"classes":{"$all": classes}};
 
     return this.users(selector);
   };

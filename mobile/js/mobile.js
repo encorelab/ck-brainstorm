@@ -234,7 +234,9 @@
         jQuery('#dashboard-screen .row-fluid').html('');
 
         //=============== populate dashboard screen
-        app.rollcall.runs({"class":{"$in":["ec101","ec102"]}})
+        var userClasses = app.user.get('classes');
+
+        app.rollcall.runs({"class":{"$in":userClasses}})
         .done(function(runsArray) {
           console.log(runsArray.toJSON());
           runsArray.each(function(run){

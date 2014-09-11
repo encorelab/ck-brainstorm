@@ -191,6 +191,7 @@
   var setUpClickListeners = function () {
     // login user
     jQuery('#signin-button').click(function (){
+      event.preventDefault();
       var username = jQuery('.email').val();
       signin(username);
     });
@@ -225,7 +226,7 @@
 
         jQuery.cookie(app.config.project_code + '_mobile_username', app.username, { expires: 1, path: '/' });
         // jQuery.cookie('hunger-games_mobile_username', app.username, { expires: 1, path: '/' });
-        jQuery('.username-display a').text(user.get('display_name'));
+        jQuery('.username-display').text(user.get('display_name'));
 
         hideLogin();
         showUsername();

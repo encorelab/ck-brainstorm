@@ -1,5 +1,5 @@
 /*jshint debug:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, curly:true, browser: true, devel: true, jquery:true, strict:false */
-/*global Backbone, _, jQuery, Sail */
+/*global Backbone, _, jQuery, Sail, Skeletor */
 
 (function() {
   "use strict";
@@ -23,7 +23,8 @@
 
   app.Router.on('route:run', function(runid){
     if (app.user) {
-      alert(runid);
+      // alert(runid);
+      Skeletor.Mobile.initRun(runid);
     } else {
       var reloadUrl = window.location.origin + window.location.pathname;
       window.location.replace(reloadUrl);

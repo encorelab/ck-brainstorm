@@ -156,9 +156,29 @@ rollcall.group('leprechaun')
 
 **/
 
-
 (function () {
   "use strict";
+
+  var Backbone, Skeletor, Drowsy, jQuery, _,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty;
+
+  if (typeof exports !== "undefined" && exports !== null) {
+    jQuery = require("jquery");
+    _ = require("underscore");
+    Backbone = require("backbone");
+    Backbone.$ = jQuery;
+    Drowsy = require("backbone.drowsy").Drowsy;
+    Skeletor = {};
+    exports.Skeletor = Skeletor;
+  } else {
+    window.Skeletor = window.Skeletor || {};
+    Skeletor = window.Skeletor;
+    jQuery = window.$;
+    _ = window._;
+    Drowsy = window.Drowsy;
+  }
 
   // a Rollcall 2.0 client
   var Rollcall = function (url, db) {

@@ -14,7 +14,9 @@
     drowsy: {
       url: 'string',
       db: 'string',
-      uic_url: 'string'
+      uic_url: 'string',
+      username: 'string',
+      password: 'string'
     },
     wakeful: {
       url: 'string'
@@ -49,6 +51,17 @@
     app.loadConfig('../config.json');
     app.verifyConfig(app.config, app.requiredConfig);
 
+    // Adding BasicAuth to the XHR header in order to authenticate with drowsy database
+    // this is not really big security but a start
+    var basicAuthHash = btoa(app.config.drowsy.username + ':' + app.config.drowsy.password);
+    Backbone.$.ajaxSetup({
+      beforeSend: function(xhr) {
+        return xhr.setRequestHeader('Authorization',
+            // 'Basic ' + btoa(username + ':' + password));
+            'Basic ' + basicAuthHash);
+      }
+    });
+
     // TODO: should ask at startup
     BASE_DATABASE = app.config.drowsy.db;
 
@@ -80,7 +93,7 @@
     });
   };
 
-  var initRun = function(runId) {
+  app.initRun = function(runId) {
     /* pull users, then initialize the model and wake it up, then pull everything else */
     Skeletor.Model.init(app.config.drowsy.url, BASE_DATABASE+'-'+runId)
     .then(function () {

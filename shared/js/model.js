@@ -26,10 +26,12 @@
     function Model() {}
 
     Model.requiredCollections = ['notes', 'tags', 'states'];
+    // Model.requiredCollections = [];
 
-    Model.init = function(url, db) {
+    Model.init = function(url, db, runId) {
       var dfrInit,
         _this = this;
+
       dfrInit = jQuery.Deferred();
       if (!url) {
         throw new Error("Cannot configure model because no DrowsyDromedary URL was given!");

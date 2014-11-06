@@ -35,11 +35,11 @@
         window.clearTimeout(app.autoSaveTimer);
 
         // save after 10 keystrokes
-        app.autoSave(app.currentNote, field, input, false);
+        app.autoSave(view.model, field, input, false);
 
         // setting up a timer so that if we stop typing we save stuff after 5 seconds
         app.autoSaveTimer = setTimeout(function(){
-          app.autoSave(app.currentNote, field, input, true);
+          app.autoSave(view.model, field, input, true);
         }, 5000);
       }
     },
@@ -63,6 +63,7 @@
     },
 
     showNewNote: function() {
+      var view = this;
       console.log('Starting new note.');
 
       // create an note object
@@ -73,7 +74,7 @@
       note.published = false;
 
       // make note wakeful and add it to notes collection
-      app.addNote(note);
+      view.model = app.addNote(note);
 
       // Clear text input field
       this.$el.find('.note-body').val('');
@@ -130,18 +131,19 @@
     // },
 
     shareNote: function() {
+      var view = this;
       console.log('want me to do stuff, teach me');
 
-      app.currentNote.set('body', this.$el.find('.note-body').val());
-      app.currentNote.set('published', true);
+      view.model.set('body', this.$el.find('.note-body').val());
+      view.model.set('published', true);
 
-      app.currentNote.save();
+      view.model.save();
 
       // clearing up
       this.$el.find('.note-body').val('');
       // turn off auto save
       window.clearTimeout(app.autoSaveTimer);
-      app.currentNote = null;
+      view.model = null;
       jQuery('.note-taking-toggle').slideUp();
       jQuery('.resume-note-btn, .new-note-btn').removeAttr('disabled', 'disabled');
     },

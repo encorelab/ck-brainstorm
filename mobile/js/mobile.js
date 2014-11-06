@@ -29,22 +29,9 @@
   app.runId= null;
   app.users = null; // users collection
   app.username = null;
-  app.runState = null;
-  app.userState = null;
-  app.numOfStudents = 0;
 
   var BASE_DATABASE = null;
   app.stateData = null;
-
-  app.currentNote = null;
-  app.currentReply = {};
-
-  app.inputView = null;
-  app.listView = null;
-  // app.loginButtonsView = null;
-
-  app.keyCount = 0;
-  app.autoSaveTimer = window.setTimeout(function() { console.log("timer activated"); } ,10);
 
   app.init = function() {
     /* CONFIG */
@@ -151,39 +138,17 @@
       }
     });
 
-    jQuery('#read-screen').removeClass('hidden');
+    // show nav links
+    jQuery('.write-button').removeClass('hidden');
+    jQuery('.read-button').removeClass('hidden');
+
+    jQuery('.container').addClass('hidden');
+    jQuery('#write-screen').removeClass('hidden');
   };
 
 
   //*************** MAIN FUNCTIONS (RENAME ME) ***************//
 
-  app.addNote = function(noteData) {
-    app.currentNote = new Model.Note(noteData);
-    app.currentNote.wake(app.config.wakeful.url);
-    app.currentNote.save();
-    Model.awake.notes.add(app.currentNote);
-    return app.currentNote;
-  };
-
-  app.saveCurrentNote = function() {
-    // app.currentNote.published = true;
-    app.currentNote.save();
-    app.currentNote = null;
-  };
-
-  app.createReply = function(noteId) {
-    app.currentReply.content = '';
-    app.currentReply.author = app.username;
-    app.currentReply.related_note_id = noteId;
-  };
-
-  app.saveCurrentReply = function(replyText) {
-    var note = Skeletor.Model.awake.notes.get(app.currentReply.related_note_id);
-    note.addBuildOn(app.username, replyText);
-    note.wake(app.config.wakeful.url);
-    note.save();
-    app.currentReply = {};
-  };
 
 
   //*************** HELPER FUNCTIONS ***************//
@@ -203,7 +168,7 @@
    */
   var setUpClickListeners = function () {
     // login user
-    jQuery('#signin-button').click(function (){
+    jQuery('#signin-button').click(function (event){
       event.preventDefault();
       var username = jQuery('.email').val();
       signin(username);
@@ -332,35 +297,6 @@
     jQuery('.container').each(function (){
       jQuery(this).addClass('hidden');
     });
-  };
-
-
-  app.autoSave = function(model, inputKey, inputValue, instantSave) {
-    app.keyCount++;
-    //console.log("  saving stuff as we go at", app.keyCount);
-
-    // if (model.kind === 'buildOn') {
-    //   if (instantSave || app.keyCount > 9) {
-    //     // save to buildOn model to stay current with view
-    //     // app.buildOn = inputValue;
-    //     // save to contribution model so that it actually saves
-    //     // var buildOnArray = app.contribution.get('build_ons');
-    //     // var buildOnToUpdate = _.find(buildOnArray, function(b) {
-    //     //   return b.author === app.userData.account.login && b.published === false;
-    //     // });
-    //     // buildOnToUpdate.content = inputValue;
-    //     // app.contribution.set('build_ons',buildOnArray);
-    //     // app.contribution.save(null, {silent:true});
-    //     // app.keyCount = 0;
-    //   }
-    // } else {
-      if (instantSave || app.keyCount > 9) {
-        console.log('Saved');
-        model.set(inputKey, inputValue);
-        model.save(null, {silent:true});
-        app.keyCount = 0;
-      }
-    //}
   };
 
 

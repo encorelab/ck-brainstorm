@@ -17,6 +17,8 @@
   "dependencies": {
     "jquery": "2.1.1",
     "bootstrap": "3.2.0",
+    "backbone": "1.1.2",
+    "underscore": "1.7.0",
     "jquery-toastmessage-plugin": "https://github.com/akquinet/jquery-toastmessage-plugin.git",
     "jquery.cookie": "https://github.com/carhartl/jquery-cookie.git#~1.4.1",
     "purl": "https://github.com/allmarkedup/purl.git#~2.3.1"

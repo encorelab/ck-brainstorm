@@ -53,7 +53,10 @@
       // fill the modal
       jQuery('#select-note-modal').html('');
       _.each(notesToRestore, function(note){
-        var option = _.template(jQuery(view.template).text(), {'option_text': note.get('body'), id: note.id});
+        // Fix to work with Underscore > 1.7.0 http://stackoverflow.com/questions/25881041/backbone-js-template-example
+        // var option = _.template(jQuery(view.template).text(), {'option_text': note.get('body'), id: note.id});
+        var optionTemplate = _.template(jQuery(view.template).text());
+        var option = optionTemplate({'option_text': note.get('body'), id: note.id});
         jQuery('#select-note-modal').append(option);
       });
 
@@ -213,8 +216,10 @@
           me_or_others = 'me';
         }
 
-        //
-        var listItem = _.template(jQuery(view.template).text(), {'id': note.id, 'text': note.get('body'), 'me_or_others': me_or_others, 'author': note.get('author'), 'created_at': note.get('created_at')});
+        // Fix to work with Underscore > 1.7.0 http://stackoverflow.com/questions/25881041/backbone-js-template-example
+        // var listItem = _.template(jQuery(view.template).text(), {'id': note.id, 'text': note.get('body'), 'me_or_others': me_or_others, 'author': note.get('author'), 'created_at': note.get('created_at')});
+        var listItemTemplate = _.template(jQuery(view.template).text());
+        var listItem = listItemTemplate({'id': note.id, 'text': note.get('body'), 'me_or_others': me_or_others, 'author': note.get('author'), 'created_at': note.get('created_at')});
 
         var existingNote = list.find("[data-id='" + note.id + "']");
 

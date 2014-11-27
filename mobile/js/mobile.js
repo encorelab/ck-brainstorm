@@ -221,7 +221,10 @@
           runsArray.each(function(run){
             //jQuery('#dashboard-screen .row-fluid').append(JSON.stringify(run));
 
-            var runFragment = _.template(jQuery('#available-runs-template').text(), {'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
+            // Fix to work with Underscore > 1.7.0 http://stackoverflow.com/questions/25881041/backbone-js-template-example
+            // var runFragment = _.template(jQuery('#available-runs-template').text(), {'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
+            var runFragmentTemplate = _.template(jQuery('#available-runs-template').text());
+            var runFragment = runFragmentTemplate({'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
             jQuery('#dashboard-screen .row-fluid').append(runFragment);
 
           });

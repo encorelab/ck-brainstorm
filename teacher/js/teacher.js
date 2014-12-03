@@ -13,8 +13,7 @@
   app.requiredConfig = {
     drowsy: {
       url: 'string',
-      db: 'string',
-      uic_url: 'string'
+      db: 'string'
     },
     wakeful: {
       url: 'string'

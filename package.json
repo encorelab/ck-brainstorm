@@ -14,7 +14,7 @@
     "underscore": "1.4.4",
     "backbone": "1.0.0",
     "backbone.drowsy": "0.2.3",
-    "rollcall-duo": "*",
+    "rollcall-duo": "~0.2.0",
     "jquery": "2.1.1"
   },
   "devDependencies": {

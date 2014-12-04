@@ -25,6 +25,8 @@
   };
 
   app.rollcall = null;
+  app.cohorts = null;
+  app.discussions = null;
   app.runId= null;
   app.users = null; // users collection
   app.username = null;
@@ -56,6 +58,12 @@
 
     if (app.rollcall === null) {
       app.rollcall = new Rollcall(app.config.drowsy.url, BASE_DATABASE);
+
+      app.cohorts = new app.rollcall.Cohorts();
+      app.cohorts.fetch();
+
+      app.discussions = new app.rollcall.Discussions();
+      app.discussions.fetch();
     }
 
     setProjectName(app.config.project_name);
@@ -212,25 +220,24 @@
         jQuery('#dashboard-screen .row-fluid').html('');
 
         //=============== populate dashboard screen
-        var userClasses = app.user.get('classes');
+        var userCohorts = app.user.get('cohorts');
 
-        app.rollcall.runs({"class":{"$in":userClasses}})
-        .done(function(runsArray) {
-          console.log(runsArray.toJSON());
-          runsArray.each(function(run){
-            //jQuery('#dashboard-screen .row-fluid').append(JSON.stringify(run));
+        var runFragmentTemplate = _.template(jQuery('#available-runs-template').text());
+        _.each(userCohorts, function(uc) {
+          var cohort = app.cohorts.get(uc);
+          var discussionIds = cohort.get('discussions');
+          _.each(discussionIds, function (dId) {
+            var d = app.discussions.get(dId);
 
-            // Fix to work with Underscore > 1.7.0 http://stackoverflow.com/questions/25881041/backbone-js-template-example
-            // var runFragment = _.template(jQuery('#available-runs-template').text(), {'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
-            var runFragmentTemplate = _.template(jQuery('#available-runs-template').text());
-            var runFragment = runFragmentTemplate({'class_name': run.get('class'), 'run_name': run.get('runname'), 'run_id': run.get('runid'), 'created_at': run.get('created_at'), id: run.id});
+            var runFragment = runFragmentTemplate({id: d.id, 'token': d.get('token'), 'description': d.get('description'), 'created_at': d.get('created_at')});
             jQuery('#dashboard-screen .row-fluid').append(runFragment);
-
           });
-
-          // show dashboard to select run
-          jQuery('#dashboard-screen').removeClass('hidden');
         });
+
+        // show dashboard to select run
+        jQuery('#dashboard-screen').removeClass('hidden');
+
+
         //=============== populate dashboard screen
       } else {
         console.log('User '+username+' not found!');
